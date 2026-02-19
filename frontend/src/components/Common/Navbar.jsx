@@ -24,7 +24,7 @@ const Navbar = () => {
         {/* left logo */}
         <div>
           <Link to="/" className="text-2xl font-medium">
-            Khazana
+            MoodWear
           </Link>
         </div>
         {/* center navigation link */}
