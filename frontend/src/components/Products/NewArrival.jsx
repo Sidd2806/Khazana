@@ -92,7 +92,7 @@ const NewArrival = () => {
 
 const handleMouseDown = (e) => {
     setIsDragging(true);
-    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setStartX(e.pageX - scrollRef.current.offsetLeft); 
     setScrollLeft(scrollRef.current.scrollLeft);
   };
 
@@ -100,9 +100,9 @@ const handleMouseDown = (e) => {
     if (!isDragging) {
       return;
     }
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = x - startX;
-    scrollRef.current.scrollLeft = scrollLeft - walk;
+    const x = e.pageX - scrollRef.current.offsetLeft; // marking starting points from where our drag will start
+    const walk = x - startX;  //how far the mouse move since drag start
+    scrollRef.current.scrollLeft = scrollLeft - walk; // move opposite to the mouse drag
   };
 
   const handleMouseUpOrLeave = () => {
@@ -122,11 +122,11 @@ const handleMouseDown = (e) => {
       setCanScrollLeft(leftScroll > 0);
       setCanScrollRight(rightScrollable);
     }
-    console.log({
-      scrollLeft: container.scrollLeft, //tells how many pixels has element has been scrolled from left edge
-      clientWidth: container.clientWidth, // visible inner width of the element
-      containerScrollWidth: container.scrollWidth, //  total width of the scrollable container
-    });
+    // console.log({
+    //   scrollLeft: container.scrollLeft, //tells how many pixels has element has been scrolled from left edge
+    //   clientWidth: container.clientWidth, // visible inner width of the element
+    //   containerScrollWidth: container.scrollWidth, //  total width of the scrollable container
+    // });
   };
   useEffect(() => {
     const container = scrollRef.current;
@@ -137,7 +137,7 @@ const handleMouseDown = (e) => {
   });
 
   return (
-    <section>
+    <section className="py-16 px-4 lg:px-0">
       <div className="container mx-auto mb-8 relative  text-center">
         <h2 className="text-3xl font-bold text-orange-600 mb-6">
           Explore New Arrivals Here
@@ -171,7 +171,7 @@ const handleMouseDown = (e) => {
         onMouseUp={handleMouseUpOrLeave}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseUpOrLeave}
-        className="container mx-auto overflow-x-scroll flex space-x-4 relative"
+        className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing" : "cursor-grab"} `}
       >
         {newArrivals.map((product) => (
           <div key={product._id} className="min-w-full sm:min-w-[30%] relative">
@@ -181,10 +181,10 @@ const handleMouseDown = (e) => {
               className="h-100 object-cover rounded-lg"
               draggable="false"
             />
-            <div className="absolute right-0 left-0 bottom-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">
+            <div className="absolute select-none right-0 left-0 bottom-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">
               <Link to={`/product/${product._id}`} className="block" />
               <h4 className="font-medium">{product.name}</h4>
-              <p className="mt-1">$ {product.price}</p>
+              <p className="mt-1">{product.price}</p>
             </div>
           </div>
         ))}
