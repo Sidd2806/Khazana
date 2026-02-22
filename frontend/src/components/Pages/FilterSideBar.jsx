@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const FilterSideBar = () => {
   // read and update URL query parameters
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [Filters, setFilters] = useState({
     category: "",
     gender: "",
@@ -81,16 +81,16 @@ const FilterSideBar = () => {
     // navigate(`?${params.toString()}`)
   };
 
-  const handlePriceChange=(e)=>{
-    const newPrice=e.target.value;
-    setPriceRange([0,newPrice])
-    const newFilters={...Filters,minPrice:0,maxPrice:newPrice}
-    setFilters(Filters)
+  const handlePriceChange = (e) => {
+    const newPrice = e.target.value;
+    setPriceRange([0, newPrice]);
+    const newFilters = { ...Filters, minPrice: 0, maxPrice: newPrice };
+    setFilters(Filters);
     updateURLParams(newFilters);
-  }
+  };
   useEffect(() => {
-    const params = Object.fromEntries([...searchParams]); // convert all the params queries into json
-    setFilters({
+    const params = Object.fromEntries([...searchParams]);
+    const Filters = {
       category: params.category || "",
       gender: params.gender || "",
       color: params.color || "",
@@ -99,10 +99,8 @@ const FilterSideBar = () => {
       brand: params.brand ? params.brand.split(",") : [],
       minPrice: params.minPrice || 0,
       maxPrice: params.maxPrice || 100,
-    });
-    setPriceRange([0, params.maxPrice || 100]);
+    };
   }, [searchParams]);
-
 
   return (
     <div className="p-4">

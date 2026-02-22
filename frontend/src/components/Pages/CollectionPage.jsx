@@ -23,7 +23,10 @@ const CollectionPage = () => {
     //add event listneter so when you click outside the sidebar it will close
     document.addEventListener("mousedown", handleClickOutside);
     // remove addEventListener
-    document.removeEventListener("mousedown", handleClickOutside);
+    return () =>{
+
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
   });
   useEffect(() => {
     setTimeout(() => {
