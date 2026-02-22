@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const FilterSideBar = () => {
   // read and update URL query parameters
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [Filters, setFilters] = useState({
     category: "",
     gender: "",
@@ -48,21 +49,44 @@ const FilterSideBar = () => {
     "ChicStyle",
   ];
   const gender = ["Men", "Women"];
-  const handleFilterChange= (e)=>{
-    const {name,value,checked,type}=e.target
-    let newFilters= {...Filters}
-    if(type=="checkbox"){
-      if(checked){
-        newFilters[name]=[...(newFilters[name] || []),value]
-      }else {
-        newFilters[name]=newFilters[name].filter((item)=>item!==value)
+  const handleFilterChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    let newFilters = { ...Filters };
+    if (type == "checkbox") {
+      if (checked) {
+        newFilters[name] = [...(newFilters[name] || []), value];
+      } else {
+        newFilters[name] = newFilters[name].filter((item) => item !== value);
       }
+    } else {
+      newFilters[name] = value;
     }
-    else {
-      newFilters[name]=value;
-    }
-    console.log("hello",{name,value,checked,type});
-    
+    setFilters(newFilters);
+    updateURLParams(newFilters);
+  };
+  const updateURLParams = (newFilters) => {
+    const params = new URLSearchParams();
+    Object.keys(newFilters).forEach((key) => {
+      if (Array.isArray(newFilters[key]) && newFilters[key].length > 0) {
+        params.append(key, newFilters[key].join(","));
+      } else if (
+        newFilters[key] !== "" &&
+        newFilters[key] != null &&
+        newFilters[key] != undefined
+      ) {
+        params.append(key, newFilters[key]);
+      }
+    });
+    setSearchParams(params);
+    // navigate(`?${params.toString()}`)
+  };
+
+  const handlePriceChange=(e)=>{
+    const newPrice=e.target.value;
+    setPriceRange([0,newPrice])
+    const newFilters={...Filters,minPrice:0,maxPrice:newPrice}
+    setFilters(Filters)
+    updateURLParams(newFilters);
   }
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]); // convert all the params queries into json
@@ -78,6 +102,8 @@ const FilterSideBar = () => {
     });
     setPriceRange([0, params.maxPrice || 100]);
   }, [searchParams]);
+
+
   return (
     <div className="p-4">
       <h3 className="text-xl font-medium text-gray-800 mb-4 border-b">
@@ -130,6 +156,7 @@ const FilterSideBar = () => {
               type="button"
               name="color"
               value={color}
+              checked={Filters.category === color}
               onClick={handleFilterChange}
             ></button>
           ))}
@@ -163,8 +190,8 @@ const FilterSideBar = () => {
               type="checkbox"
               name="material"
               value={material}
-              // onChange={handleFilterChange}
-              // checked={Filters.material.includes(material)}
+              onChange={handleFilterChange}
+              checked={Filters.material.includes(material)}
               className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
             />
             <span className="text-gray-700">{material}</span>
@@ -198,8 +225,8 @@ const FilterSideBar = () => {
           name="priceRange"
           min={0}
           max={100}
-          // value={PriceRange[1]}
-          // onChange={handlePriceRange}
+          value={PriceRange[1]}
+          onChange={handlePriceChange}
           className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
         />
         <div className="flex justify-between text-gray-600 mt-2">
