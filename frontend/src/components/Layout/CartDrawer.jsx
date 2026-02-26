@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom'
 const CartDrawer = ({drawerOpen,toggleDrawer}) => {
   const navigate=useNavigate();
   const handleCheckout =()=>{
+    toggleDrawer()
     navigate("/checkout")
   }
    
   return (
-    <div className={`fixed top-0 right-0 w-3/4 sm:w-1/2 md:w-120 bg-slate-200 h-full shadow-lg transform transition-transform duration-300 flex flex-col ${drawerOpen ? "translate-x-0" : "translate-x-full"}`}>
+    <div className={`fixed top-0 right-0 w-3/4 z-50 sm:w-1/2 md:w-120 bg-slate-200 h-full shadow-lg transform transition-transform duration-300 flex flex-col ${drawerOpen ? "translate-x-0" : "translate-x-full"}`}>
         {/* close button */}
          <div className='flex justfiy-end p-4'>
             <button onClick={toggleDrawer}>
