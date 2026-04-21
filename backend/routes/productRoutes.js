@@ -262,7 +262,7 @@ router.get("/new-arrivals", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-///////////////Why best seller above to id route because if it is below first router will check for id and it matcher id=best-sellar then runs findbyid(best-sellar)//////////////////////////////////////////
+/////Why best seller above to id route because if it is below first router will check for id and it matcher id=best-sellar then runs findbyid(best-sellar)///////
 //@route GET /api/products/:id
 // @desc get a single product by id
 //@access Public

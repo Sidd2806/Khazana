@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const Product = require("./model/Product");
 const User = require("./model/User");
+const Cart = require("./model/Cart");
 const products = require("./data/products");
 
 const seedData = async () => {
@@ -11,7 +12,8 @@ const seedData = async () => {
     console.log("MongoDB Connected");
 
     await Product.deleteMany();
-    await User.deleteMany();
+    await User.deleteMany(); 
+    await Cart.deleteMany(); 
 
     const createdUser = await User.create({
       name: "Admin User",
