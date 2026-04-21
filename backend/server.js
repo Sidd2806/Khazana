@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const userRoutes= require("./routes/userRoutes.js")
+const productRoutes= require("./routes/productRoutes.js")
 // ✅ LOAD ENV FIRST
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 // API routes
 
 app.use("/api/users",userRoutes)
+app.use("/api/products",productRoutes)
 
 // Server
 app.listen(PORT, () => {

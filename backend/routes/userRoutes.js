@@ -3,10 +3,9 @@ const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../Middleware/authMiddleware");
 const router = express.Router();
-// @route post  /api/user/register
+// @route post  /api/users/register
 // @desc register a new user
 // @access Public
-
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -14,10 +13,8 @@ router.post("/register", async (req, res) => {
     if (user) return res.status(400).json({ message: "User already exists" });
     user = new User({ name, email, password });
     await user.save();
-
     //jwt payload
     const payload = { user: { _id: user._id, role: user.role } };
-
     //signup and return token along withuser data
     jwt.sign(
       payload,
@@ -40,7 +37,6 @@ router.post("/register", async (req, res) => {
     console.log(error);
     res.status(500).send("Server error");
   }
-
   //   @route POST/api/users/login
   //  @desc authenticate user
   // @acess public
@@ -79,7 +75,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
-
 // @users get api/users/profile
 // @desc get the logged in user profile
 // @access protected route
