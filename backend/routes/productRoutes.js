@@ -10,11 +10,15 @@ const router = express.Router();
 
 router.post("/", protect, admin, async (req, res) => {
   try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "Request body is empty. Make sure to send JSON data with Content-Type: application/json header" });
+    }
+    
     const {
       name,
       description,
       price,
-      discoutPrice,
+      discountPrice,
       countInStock,
       category,
       brand,
@@ -30,12 +34,12 @@ router.post("/", protect, admin, async (req, res) => {
       dimensions,
       weight,
       sku,
-    } = await req.body;
+    } =  req.body;
     const products = new Product({
       name,
       description,
       price,
-      discoutPrice,
+      discountPrice,
       countInStock,
       category,
       brand,
@@ -70,7 +74,7 @@ router.put("/:id", protect, admin, async (req, res) => {
       name,
       description,
       price,
-      discoutPrice,
+      discountPrice,
       countInStock,
       category,
       brand,
@@ -94,7 +98,7 @@ router.put("/:id", protect, admin, async (req, res) => {
       product.name = name || product.name;
       product.description = description || product.description;
       product.price = price || product.price;
-      product.discoutPrice = discoutPrice || product.discoutPrice;
+      product.discountPrice = discountPrice || product.discountPrice;
       product.countInStock = countInStock || product.countInStock;
       product.category = category || product.category;
       product.brand = brand || product.brand;

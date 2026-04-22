@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    price: {
+    discountPrice: {
       type: Number,
     },
     countInStock: {
@@ -35,10 +35,6 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
     sizes: {
-      type: [String],
-      required: true,
-    },
-    colors: {
       type: [String],
       required: true,
     },
@@ -78,7 +74,7 @@ const productSchema = new mongoose.Schema(
     },
     numReview: {
       type: Number,
-      deafult: 0,
+      default: 0,
     },
     tags: [String],
     user: {
@@ -99,7 +95,7 @@ const productSchema = new mongoose.Schema(
     },
     weight: Number,
   },
-  { timeStamp: true },
+  { timestamps: true },
 );
 
 module.exports=mongoose.model("Product",productSchema)
