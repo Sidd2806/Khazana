@@ -5,6 +5,9 @@ const userRoutes= require("./routes/userRoutes.js")
 const productRoutes= require("./routes/productRoutes.js")
 const cartRoutes= require("./routes/cartRoutes.js")
 const checkoutRoutes= require("./routes/checkoutRoutes.js")
+const ordertRoutes= require("./routes/orderRoutes.js")
+const uploadroutes=require("./routes/uploadRoutes.js")
+const subscribeRoute=require("./routes/subscribeRoute.js")
 // ✅ LOAD ENV FIRST
 dotenv.config();
 
@@ -31,6 +34,9 @@ app.use("/api/users",userRoutes)
 app.use("/api/products",productRoutes)
 app.use("/api/cart",cartRoutes)
 app.use("/api/checkout",checkoutRoutes)
+app.use("/api/orders",ordertRoutes)
+app.use("/api/upload",uploadroutes)
+app.use("/api/subscribe",subscribeRoute)
 
 // Server
 app.listen(PORT, () => {
