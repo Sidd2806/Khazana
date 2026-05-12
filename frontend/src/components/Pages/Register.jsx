@@ -1,25 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import RegisterGirl from "../../assets/register.webp";
+import { registerUser } from "../../redux/slice/authSlice";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch=useDispatch()
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !email || !password) {
-      alert("All fields are required");
-      return;
-    }
-    // const userData = {
-    //     name,
-    //     email,
-    //     password,
-    // }
-    setEmail("");
-    setName("");
-    setPassword("");
+    dispatch(registerUser({name,email,password}))
     console.log('User Registered: ', name, email, password);
   };
   return (

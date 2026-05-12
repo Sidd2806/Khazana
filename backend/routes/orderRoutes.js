@@ -19,7 +19,7 @@ router.get("/my-orders", protect, async (req, res) => {
 });
 
 // @ROUTE get api/orders/:id
-// @desc Vget order details by id
+// @desc get order details by id
 // @access private
 
 router.get("/:id", protect, async (req, res) => {

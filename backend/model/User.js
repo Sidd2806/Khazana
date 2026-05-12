@@ -29,18 +29,18 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-
 // pasword hash before middleware
-userSchema.pre("save",async function(next){ // whener .save() called this function will run 
-    if(!this.isModified("password")) return next(); // isModified internal working of mongoose that chack pass changed or not
-    const salt= await bcrypt.genSalt(10);
-    this.password= await bcrypt.hash(this.password,salt) 
-})
+userSchema.pre("save", async function (next) {
+  // whener .save() called this function will run
+  if (!this.isModified("password")) return next; // isModified internal working of mongoose that chack pass changed or not
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 // now matching password with saved hased pass
 
-userSchema.methods.matchPassword= async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword, this.password) // internally bcrypt compare hased pass with the given pass
-}
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password); // internally bcrypt compare hased pass with the given pass
+};
 
-module.exports= mongoose.model("User",userSchema)
+module.exports = mongoose.model("User", userSchema);

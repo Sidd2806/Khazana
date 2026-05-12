@@ -1,24 +1,31 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoginGirl from "../../assets/login.webp";
-
+import { loginUser } from "../../redux/slice/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       alert("All fields are required");
       return;
     }
-    // const userData = {
-    //   email,
-    //   password,
-    // };
-    setEmail("");
-    setPassword("");
-    console.log("User Login: ",email, password);
+    try {
+      const user = await dispatch(
+        loginUser({ email: email.trim().toLowerCase(), password }),
+      ).unwrap();
+      toast.success("Logged in successfully");
+      navigate(user.role === "admin" ? "/admin" : "/profile");
+    } catch (error) {
+      toast.error(error?.message || "Invalid email or password");
+    }
   };
   return (
     <div className="flex">
@@ -62,8 +69,12 @@ const Login = () => {
               placeholder="Enter Your Password..."
             />
           </div>
-          <button className="w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition">
-            Sign In
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition disabled:cursor-not-allowed disabled:bg-gray-600"
+          >
+            {loading ? "Signing In..." : "Sign In"}
           </button>
           <p className="text-sm tracking-tighter text-center mt-4">
             Don't have an Account ?

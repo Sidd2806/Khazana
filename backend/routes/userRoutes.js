@@ -7,8 +7,12 @@ const router = express.Router();
 // @desc register a new user
 // @access Public
 router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, password } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
   try {
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
     user = new User({ name, email, password });
@@ -42,8 +46,12 @@ router.post("/register", async (req, res) => {
   // @acess public
 });
 router.post("/login", async (req, res) => {
-  const { email, password } = await req.body;
+  const { password } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
   try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid Credentials" });
     const isMatch = await user.matchPassword(password);
