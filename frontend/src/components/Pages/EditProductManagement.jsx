@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  fetchProductDetails,
+  updateProduct,
+} from "../../redux/slice/productsSlice";
+import axios from "axios";
 
 const EditProductManagement = () => {
-  const [fileName,setFileName]=useState("")
+  const [fileName, setFileName] = useState("");
+  const [uploading, setUploading] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { selectedProduct, loading, error } = useSelector(
+    (state) => state.products
+  );
+
   const [productData, setProductData] = useState({
     name: "",
     description: "",
     price: "",
-    countInstock: "",
+    countInStock: "",
     sku: "",
     category: "",
     brand: "",
@@ -15,34 +32,111 @@ const EditProductManagement = () => {
     collections: "",
     material: "",
     gender: "",
-    images: [
-      {
-        url: "https://picsum.photos/150?random=1",
-      },
-      {
-        url: "https://picsum.photos/150?random=2",
-      },
-    ],
+    images: [],
   });
+
+  // Fetch product details
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchProductDetails(id));
+    }
+  }, [dispatch, id]);
+
+  // Set selected product data
+  useEffect(() => {
+    if (selectedProduct) {
+      setProductData({
+        ...selectedProduct,
+        sizes: selectedProduct.sizes || [],
+        colors: selectedProduct.colors || [],
+        images: selectedProduct.images || [],
+      });
+    }
+  }, [selectedProduct]);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProductData((prevData) => ({ ...prevData, [name]: value }));
+
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  // Handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
+
+    if (!file) return;
+
+    const formData = new FormData();
+
+    formData.append("image", file);
+
+    try {
+      setUploading(true);
+
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setProductData((prevData) => ({
+        ...prevData,
+        images: [
+          ...prevData.images,
+          {
+            url: data.imageUrl,
+            altText: "",
+          },
+        ],
+      }));
+
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+
+      setUploading(false);
+    }
   };
-  const handleSubmit = (e)=>{
-    e.preventDefault()
-    console.log(productData)
-  }
+
+  // Handle submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    await dispatch(
+      updateProduct({
+        id,
+        productData,
+      })
+    );
+
+    navigate("/admin/products");
+  };
+
+  if (loading) return <p>Loading...</p>;
+
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div className="max-w-5xl mx-auto p-6 shadow-md rounded-md">
-      <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
-      <form onSubmit={handleSubmit} >
+      <h2 className="text-3xl font-bold mb-6">
+        Edit Product
+      </h2>
+
+      <form onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">Product Name</label>
+          <label className="block font-semibold mb-2">
+            Product Name
+          </label>
+
           <input
             type="text"
             value={productData.name}
@@ -51,11 +145,14 @@ const EditProductManagement = () => {
             className="w-full border border-gray-400 rounded-md p-2"
           />
         </div>
-        {/* description */}
+
+        {/* Description */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">Description</label>
+          <label className="block font-semibold mb-2">
+            Description
+          </label>
+
           <textarea
-            type="text"
             value={productData.description}
             name="description"
             onChange={handleChange}
@@ -64,9 +161,13 @@ const EditProductManagement = () => {
             required
           />
         </div>
-        {/* price */}
+
+        {/* Price */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">Price</label>
+          <label className="block font-semibold mb-2">
+            Price
+          </label>
+
           <input
             type="number"
             name="price"
@@ -75,20 +176,28 @@ const EditProductManagement = () => {
             className="w-full border border-gray-400 p-2"
           />
         </div>
-        {/* countInStock */}
+
+        {/* Count In Stock */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">count in stock</label>
+          <label className="block font-semibold mb-2">
+            Count In Stock
+          </label>
+
           <input
             type="number"
-            name="countInstock"
-            value={productData.countInstock}
+            name="countInStock"
+            value={productData.countInStock}
             onChange={handleChange}
             className="w-full border border-gray-400 p-2"
           />
         </div>
+
         {/* SKU */}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">SKU</label>
+          <label className="block font-semibold mb-2">
+            SKU
+          </label>
+
           <input
             type="text"
             name="sku"
@@ -97,81 +206,106 @@ const EditProductManagement = () => {
             className="w-full border border-gray-400 p-2"
           />
         </div>
-        {/* sizes */}
+
+        {/* Sizes */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Sizes (comma-separated)
           </label>
+
           <input
             type="text"
             name="sizes"
-            value={productData.sizes.join(", ")}
+            value={productData.sizes?.join(", ")}
             onChange={(e) =>
               setProductData({
                 ...productData,
-                sizes: e.target.value.split(",").map((size) => size.trim()),
+                sizes: e.target.value
+                  .split(",")
+                  .map((size) => size.trim()),
               })
             }
             className="w-full border border-gray-400 p-2"
           />
         </div>
-        {/* COLORS */}
+
+        {/* Colors */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">
             Colors (comma-separated)
           </label>
+
           <input
             type="text"
             name="colors"
-            value={productData.colors.join(", ")}
+            value={productData.colors?.join(", ")}
             onChange={(e) =>
               setProductData({
                 ...productData,
-                colors: e.target.value.split(",").map((color) => color.trim()),
+                colors: e.target.value
+                  .split(",")
+                  .map((color) => color.trim()),
               })
             }
             className="w-full border border-gray-400 p-2"
           />
         </div>
-        {/* Image upload */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">Upload Image</label>
 
-          <label className="flex items-center gap-3  rounded-md px-3 py-2 w-fit cursor-pointer hover:border-gray-600 transition">
+        {/* Image Upload */}
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">
+            Upload Image
+          </label>
+
+          <label className="flex items-center gap-3 rounded-md px-3 py-2 w-fit cursor-pointer hover:border-gray-600 transition">
             <span className="bg-gray-200 px-3 py-1 rounded-md text-sm">
               Choose File
             </span>
 
-            {/* File name text */}
-            <span className="text-gray-600 text-sm">{fileName}</span>
+            <span className="text-gray-600 text-sm">
+              {fileName || "No file chosen"}
+            </span>
 
-            {/* Hidden real input */}
             <input
               type="file"
               onChange={(e) => {
                 handleImageUpload(e);
-                setFileName(e.target.files[0]?.name || "No file chosen");
+
+                setFileName(
+                  e.target.files[0]?.name ||
+                    "No file chosen"
+                );
               }}
               className="hidden"
             />
           </label>
 
+          {/* Uploading state */}
+          {uploading && (
+            <p className="text-blue-500 mt-2">
+              Uploading image...
+            </p>
+          )}
+
           {/* Images */}
-          <div className="flex gap-4 mt-4">
-            {productData.images.map((image, index) => (
+          <div className="flex gap-4 mt-4 flex-wrap">
+            {productData.images?.map((image, index) => (
               <div key={index}>
                 <img
                   src={image.url}
-                  alt={image.altText || "product images"}
+                  alt={
+                    image.altText || "product image"
+                  }
                   className="w-20 h-20 object-cover rounded-md shadow-md"
                 />
               </div>
             ))}
           </div>
         </div>
-        <button
-        className="w-full text-center p-2 bg-green-500 text-white rounded-md"
-        >Update Product</button>
+
+        <button className="w-full text-center p-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+          Update Product
+        </button>
       </form>
     </div>
   );

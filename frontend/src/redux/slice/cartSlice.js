@@ -25,6 +25,9 @@ export const fetchCart = createAsyncThunk(
         `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
         {
           params: { userId, guestId },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
         }
       );
 
@@ -58,6 +61,11 @@ export const addToCart = createAsyncThunk(
           color,
           guestId,
           userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
         }
       );
 
@@ -91,6 +99,11 @@ export const updateCartItemQuantity = createAsyncThunk(
           userId,
           size,
           color,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
         }
       );
 
@@ -126,6 +139,10 @@ export const removeFromCart = createAsyncThunk(
           userId,
           size,
           color,
+        },
+
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
         },
       });
 

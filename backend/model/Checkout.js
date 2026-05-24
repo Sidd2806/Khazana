@@ -27,8 +27,10 @@ const checkoutItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    size: String,
+    color: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const checkoutSchema = new mongoose.Schema(
@@ -100,7 +102,7 @@ const checkoutSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Checkout", checkoutSchema);

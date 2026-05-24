@@ -1,23 +1,27 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  fetchAllOrders,
+  updateOrderStatus,
+} from "../../redux/slice/adminOrderSlice";
 const OrderManagement = () => {
-  const orders = [
-    {
-      _id: 1234,
-      user: {
-        name: "Himanshu",
-      },
-      total_price: 34,
-      status: "",
-    },
-  ];
-  const handleChange = (userid, status) => {
-    console.log({ id: userid, status: status });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { orders, loading, error } = useSelector((state) => state.adminOrders);
+  useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+    } else {
+      dispatch(fetchAllOrders());
+    }
+  }, [dispatch, user, navigate]);
+  const handleStatusChange = (orderId, status) => {
+    dispatch(updateOrderStatus({ id: orderId, status }));
   };
-  const handleStatusChange = (orderId)=>{
-    console.log(orderId);
-    
-  }
+  if (loading) return <p>Loading ...</p>;
+  if (error) return <p>Error:{error} </p>;
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-3xl font-bold">Order Management</h2>
@@ -48,12 +52,12 @@ const OrderManagement = () => {
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap ">
                   {" "}
-                  ${order.total_price}{" "}
+                  ${order.totalPrice.toFixed(2)}{" "}
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap ">
                   <select
                     value={order.status}
-                    onChange={(e) => handleChange(order._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                   >
                     <option value="Processing">Processing</option>

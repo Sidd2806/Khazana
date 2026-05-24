@@ -1,14 +1,37 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import RegisterGirl from "../../assets/register.webp";
 import { registerUser } from "../../redux/slice/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { mergeCart } from "../../redux/slice/cartSlice";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation()
+  const {user,guestId}= useSelector((state)=>state.auth)
+  const {cart}= useSelector((state)=>state.cart)
+
+  //  get redirect parameter and chek if it's checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect")||"/";
+  const isCheckoutRedirect = redirect.includes("checkout")
+
+  useEffect(()=>{
+    if(user){
+      if(cart?.products?.length>0 && guestId) {
+        dispatch(mergeCart({guestId,user})).then(()=>{
+          // Redirect to checkout only if explicitly requested, otherwise home
+          navigate(isCheckoutRedirect ? "/checkout" : "/")
+        })
+      }else{
+        // Default behavior: go to home, only checkout if explicitly requested
+        navigate(isCheckoutRedirect ? "/checkout" : "/")
+      }
+    }
+  },[user,guestId,cart,navigate,isCheckoutRedirect,dispatch])
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser({name,email,password}))
@@ -77,7 +100,7 @@ const Register = () => {
           </button>
           <p className="text-sm tracking-tighter text-center mt-4 mb-4">
             Already have an Account ?
-            <Link to="/login" className="text-blue-500">
+            <Link to={`/login?redirect=${encodeURIComponent(redirect)}`} className="text-blue-500">
               {" "}
               Login
             </Link>

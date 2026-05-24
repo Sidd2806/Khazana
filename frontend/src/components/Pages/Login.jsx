@@ -1,15 +1,36 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoginGirl from "../../assets/login.webp";
 import { loginUser } from "../../redux/slice/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import {mergeCart} from "../../redux/slice/cartSlice"
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading } = useSelector((state) => state.auth);
+  const location = useLocation()
+  const {user,guestId,loading}= useSelector((state)=>state.auth)
+  const {cart}= useSelector((state)=>state.cart)
+
+  //  get redirect parameter and chek if it's checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect")||"/";
+  const isCheckoutRedirect = redirect.includes("checkout")
+
+  useEffect(()=>{
+    if(user){
+      if(cart?.products?.length>0 && guestId) {
+        dispatch(mergeCart({guestId,user})).then(()=>{
+          // Redirect to checkout only if explicitly requested, otherwise home
+          navigate(isCheckoutRedirect ? "/checkout" : "/")
+        })
+      }else{
+        // Default behavior: go to home, only checkout if explicitly requested
+        navigate(isCheckoutRedirect ? "/checkout" : "/")
+      }
+    }
+  },[user,guestId,cart,navigate,isCheckoutRedirect,dispatch])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,11 +39,12 @@ const Login = () => {
       return;
     }
     try {
-      const user = await dispatch(
+       await dispatch(
         loginUser({ email: email.trim().toLowerCase(), password }),
       ).unwrap();
       toast.success("Logged in successfully");
-      navigate(user.role === "admin" ? "/admin" : "/profile");
+      // Let useEffect handle navigation based on redirect parameter
+      // The useEffect will watch user state and navigate appropriately
     } catch (error) {
       toast.error(error?.message || "Invalid email or password");
     }
@@ -78,7 +100,7 @@ const Login = () => {
           </button>
           <p className="text-sm tracking-tighter text-center mt-4">
             Don't have an Account ?
-            <Link to="/register" className="text-blue-500">
+            <Link to={`/register?redirect=${encodeURIComponent(redirect)}`} className="text-blue-500">
               {" "}
               Register
             </Link>

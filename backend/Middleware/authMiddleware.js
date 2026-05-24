@@ -22,7 +22,6 @@ const protect = async (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, no token provided" });
   }
 };
-
 const admin = (req,res,next)=>{
   if(req.user && req.user.role==="admin"){
     next();

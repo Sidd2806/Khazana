@@ -5,6 +5,8 @@ import cartReducer from "./slice/cartSlice"
 import checkoutReducer from "./slice/checkoutSlice"
 import orderReducer from "./slice/orderSlice"
 import adminReducer from "./slice/adminSlice"
+import adminProductReducer from "./slice/adminProductSlice"
+import adminOrdersReducer from "./slice/adminOrderSlice"
 // configuration creates store and conncets reducers
 
 const store = configureStore({
@@ -13,8 +15,10 @@ const store = configureStore({
         products:productReducer,
         cart:cartReducer,
         checkout:checkoutReducer,
-        order:orderReducer,
-        admin:adminReducer
+        orders:orderReducer,
+        admin:adminReducer,
+        adminProducts:adminProductReducer,
+        adminOrders:adminOrdersReducer
     }, // it basically decide how data state will change
 })
 
