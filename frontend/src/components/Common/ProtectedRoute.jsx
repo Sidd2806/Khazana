@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 
-const Protectedroute = ({children,role}) => {
+const ProtectedRoute = ({children,role}) => {
     const {user}= useSelector((state)=>state.auth)
 
     if(!user || (role && user.role!==role)){
@@ -11,4 +11,4 @@ const Protectedroute = ({children,role}) => {
   return children
 }
 
-export default Protectedroute
+export default ProtectedRoute

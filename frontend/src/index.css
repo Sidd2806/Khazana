@@ -5,6 +5,29 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
+
+button:not(:disabled),
+summary,
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+[data-sonner-toaster][data-x-position="right"][data-y-position="top"] {
+  --offset-top: 16px !important;
+  --offset-right: clamp(10rem, 16vw, 14rem) !important;
+}
+
+@media (max-width: 768px) {
+  [data-sonner-toaster][data-x-position="right"][data-y-position="top"] {
+    --offset-right: 1rem !important;
+    --mobile-offset-top: 16px !important;
+  }
+}
+
 @theme {
   --color-bloddy-red: #ea2e0e;
 }

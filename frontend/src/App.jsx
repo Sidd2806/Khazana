@@ -19,13 +19,19 @@ import EditProductManagement from "./components/Pages/EditProductManagement";
 import OrderManagement from "./components/Pages/OrderManagement";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import Protectedroute from "./components/Common/Protectedroute";
+import ProtectedRoute from "./components/Common/ProtectedRoute";
 
 const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <Toaster position="top-right" />
+        <Toaster
+          position="top-right"
+          offset="16px"
+          toastOptions={{
+            className: "max-w-[22rem]",
+          }}
+        />
         <Routes>
           <Route path="/" element={<UserLayout />}>
             {/* User layout */}
@@ -50,9 +56,9 @@ const App = () => {
           <Route
             path="/admin"
             element={
-              <Protectedroute role="admin">
+              <ProtectedRoute role="admin">
                 <AdminLayout />
-              </Protectedroute>
+              </ProtectedRoute>
             }
           >
             {/* Admin layout */}

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {fetchUserOrders} from "../../redux/slice/orderSlice"
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 
 const MyOrderPage = () => {
   const dispatch= useDispatch()
@@ -43,8 +44,9 @@ const MyOrderPage = () => {
                 >
                   <td className="py-2 px-2 sm:py-4 sm:px-4">
                     <img
-                      src={order.orderItems[0].image}
+                      src={order.orderItems[0].image || productImageFallback}
                       alt={order.orderItems[0].name}
+                      onError={handleImageError}
                       className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover"
                     />
                   </td>

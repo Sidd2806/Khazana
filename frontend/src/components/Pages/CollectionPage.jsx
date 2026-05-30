@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import FilterSideBar from "./FilterSideBar";
 import SortOptions from "./SortOptions";
@@ -13,23 +13,27 @@ const CollectionPage = () => {
   const sidebarRef = useRef(null);
   const [isSeideBarOpen, setIsSeideBarOpen] = useState(false);
   const { products, loading, error } = useSelector((state) => state.products);
-  const queryParams = Object.fromEntries([...searchParamas]);
+  const queryParams = useMemo(
+    () => Object.fromEntries([...searchParamas]),
+    [searchParamas]
+  );
 
   useEffect(() => {
     dispatch(fetchProductsByFilters({ collection, ...queryParams }));
-  }, [dispatch, collection, searchParamas]);
+  }, [dispatch, collection, queryParams]);
 
   const toggleSideBar = () => {
     setIsSeideBarOpen(!isSeideBarOpen);
   };
 
-  const handleClickOutside = (e) => {
+  const handleClickOutside = useCallback((e) => {
     // 1 sideref.current check is sidebar exist or not
     // 2 sideref.current.contains means the actual sidebar dom and e.target give the location of the user clciked and it beinged chekc wheter it is inside or outside
     if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
       setIsSeideBarOpen(false);
     }
-  };
+  }, []);
+
   useEffect(() => {
     //add event listneter so when you click outside the sidebar it will close
     document.addEventListener("mousedown", handleClickOutside);
@@ -37,7 +41,7 @@ const CollectionPage = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, [handleClickOutside]);
   return (
     <div className="flex flex-col lg:flex-row">
       {/* mobile */}

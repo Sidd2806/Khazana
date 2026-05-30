@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 const NewArrival = () => {
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,14 +87,14 @@ const NewArrival = () => {
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className={`p-2 rounded border ${canScrollLeft ? "text-black bg-white" : "text-gray-400 bg-gray-200 cursor-not-allowed"}`}
+            className={`p-2 rounded border ${canScrollLeft ? "text-black bg-white hover:bg-gray-50" : "text-gray-400 bg-gray-200 cursor-not-allowed"}`}
           >
             <FiChevronLeft className="text-xl" />
           </button>
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className={`p-2 rounded border ${canScrollRight ? "text-black bg-white" : "text-gray-400 bg-gray-200 cursor-not-allowed"}`}
+            className={`p-2 rounded border ${canScrollRight ? "text-black bg-white hover:bg-gray-50" : "text-gray-400 bg-gray-200 cursor-not-allowed"}`}
           >
             <FiChevronRight className="text-xl" />
           </button>
@@ -106,14 +107,18 @@ const NewArrival = () => {
         onMouseUp={handleMouseUpOrLeave}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseUpOrLeave}
-        className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing" : "cursor-grab"} `}
+        className={`container mx-auto overflow-x-auto flex gap-6 relative pb-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"} `}
       >
         {newArrivals.map((product) => (
-          <div key={product._id} className="min-w-full sm:min-w-[30%] relative">
+          <div
+            key={product._id}
+            className="relative flex-none w-[82vw] sm:w-[22rem] md:w-[24rem] lg:w-[28rem]"
+          >
             <img
-              src={product.images[0]?.url}
+              src={product.images[0]?.url || productImageFallback}
               alt={product.images[0]?.altText || product.name}
-              className="h-100 object-cover rounded-lg"
+              onError={handleImageError}
+              className="w-full h-[24rem] md:h-[28rem] object-cover rounded-lg"
               draggable="false"
             />
             <div className="absolute select-none right-0 left-0 bottom-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">

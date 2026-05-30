@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createCheckout } from "../../redux/slice/checkoutSlice";
 import axios from "axios";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 const CheckOut = () => {
   const [checkOutId, setCheckOutId] = useState(null);
 
@@ -285,8 +286,9 @@ const CheckOut = () => {
             >
               <div className="flex items-start">
                 <img
-                  src={product.image}
+                  src={product.image || productImageFallback}
                   alt={product.name}
+                  onError={handleImageError}
                   className="w-20 h-24 object-cover mr-4 rounded-lg"
                 />
 

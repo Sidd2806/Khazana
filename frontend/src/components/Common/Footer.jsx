@@ -39,22 +39,34 @@ const Footer = () => {
           <h3 className="text-lg text-gray-800 mb-3">Shop</h3>
           <ul className="space-y-4 text-gray-700">
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all?gender=Men&category=Top Wear"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Men's Top Wear
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all?gender=Women&category=Top Wear"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Women's Top Wear
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all?gender=Men&category=Bottom Wear"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Men's Bottom Wear
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all?gender=Women&category=Bottom Wear"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Women's Bottom Wear
               </Link>
             </li>
@@ -66,22 +78,34 @@ const Footer = () => {
           <h3 className="text-lg text-gray-800 mb-3">Support</h3>
           <ul className="space-y-4 text-gray-700">
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <a
+                href="tel:+917340092439"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Contact Us
+              </a>
+            </li>
+            <li>
+              <Link
+                to="/my-orders"
+                className="hover:text-gray-500 transition-colors"
+              >
+                Track Order
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all"
+                className="hover:text-gray-500 transition-colors"
+              >
                 FAQs
               </Link>
             </li>
             <li>
-              <Link to="#" className="hover:text-gray-500 transition-colors">
+              <Link
+                to="/collections/all"
+                className="hover:text-gray-500 transition-colors"
+              >
                 Features
               </Link>
             </li>
@@ -101,7 +125,7 @@ const Footer = () => {
               <TbBrandMeta className="h-6  w-6" />
             </a>
             <a
-              href="https://www.facebook.com"
+              href="https://www.instagram.com"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300"
@@ -109,7 +133,7 @@ const Footer = () => {
               <IoLogoInstagram className="h-6  w-6" />
             </a>
             <a
-              href="https://www.facebook.com"
+              href="https://x.com"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300"

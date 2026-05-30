@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 
 const ProductGrid = ({ products,loading,error }) => {
   if(loading){
@@ -15,8 +16,9 @@ const ProductGrid = ({ products,loading,error }) => {
           <div className="bg-white p-3 rounded-lg">
             <div className="w-full h-96 mb-4">
               <img
-                src={product.images[0].url}
-                alt={product.images[0].altText || product.name}
+                src={product.images?.[0]?.url || productImageFallback}
+                alt={product.images?.[0]?.altText || product.name}
+                onError={handleImageError}
                 className="w-full h-full object-cover rounded-lg"
               />
             </div>

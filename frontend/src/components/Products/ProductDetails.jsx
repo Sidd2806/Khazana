@@ -8,6 +8,7 @@ import {
   fetchSimilarProducts,
 } from "../../redux/slice/productsSlice";
 import { addToCart } from "../../redux/slice/cartSlice";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const ProductDetails = ({ productId }) => {
     (state) => state.products,
   );
   const { user, guestId } = useSelector((state) => state.auth);
-  const [mainImage, setMainImage] = useState("");
+  const [mainImage, setMainImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -31,12 +32,11 @@ const ProductDetails = ({ productId }) => {
     }
   }, [dispatch, productFetchId]);
 
-  
-  useEffect(() => {
-  if (selectedProduct?.images?.length > 0) {
-    setMainImage(selectedProduct.images[0].url);
-  }
-}, [selectedProduct]);
+  const selectedMainImage =
+    selectedProduct && mainImage?.productId === selectedProduct._id
+      ? mainImage.url
+      : selectedProduct?.images?.[0]?.url || productImageFallback;
+
   const handleQuantityChange = (action) => {
     if (action === "plus") setQuantity((prev) => prev + 1);
     if (action === "minus" && quantity > 1) setQuantity((prev) => prev - 1);
@@ -91,12 +91,20 @@ const ProductDetails = ({ productId }) => {
             {selectedProduct.images.map((image, index) => (
               <img
                 key={index}
-                src={image.url}
+                src={image.url || productImageFallback}
                 alt={image.altText || `Thumbnail ${index}`}
+                onError={handleImageError}
                 className={`w-20 h-20 rounded-lg object-cover cursor-pointer border ${
-                  mainImage === image.url ? "border-black" : "border-gray-400"
+                  selectedMainImage === (image.url || productImageFallback)
+                    ? "border-black"
+                    : "border-gray-400"
                 }`}
-                onClick={() => setMainImage(image.url)}
+                onClick={() =>
+                  setMainImage({
+                    productId: selectedProduct._id,
+                    url: image.url || productImageFallback,
+                  })
+                }
               />
             ))}
           </div>
@@ -105,8 +113,9 @@ const ProductDetails = ({ productId }) => {
           <div className="md:w-1/2">
             <div className="mb-4">
               <img
-                src={mainImage}
+                src={selectedMainImage}
                 alt="Main Products"
+                onError={handleImageError}
                 className="w-full h-auto object-cover rounded-lg"
               />
             </div>
@@ -117,12 +126,20 @@ const ProductDetails = ({ productId }) => {
             {selectedProduct.images.map((image, index) => (
               <img
                 key={index}
-                src={image.url}
+                src={image.url || productImageFallback}
                 alt={image.altText || `Thumbnail ${index}`}
+                onError={handleImageError}
                 className={`w-20 h-20 rounded-lg object-cover cursor-pointer border ${
-                  mainImage === image.url ? "border-black" : "border-gray-400"
+                  selectedMainImage === (image.url || productImageFallback)
+                    ? "border-black"
+                    : "border-gray-400"
                 }`}
-                onClick={() => setMainImage(image.url)}
+                onClick={() =>
+                  setMainImage({
+                    productId: selectedProduct._id,
+                    url: image.url || productImageFallback,
+                  })
+                }
               />
             ))}
           </div>

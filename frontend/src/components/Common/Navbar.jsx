@@ -4,6 +4,7 @@ import {
   HiOutlineUser,
   HiOutlineShoppingBag,
   HiBars3BottomRight,
+  
 } from "react-icons/hi2";
 import SearchBar from "./SearchBar";
 import CartDrawer from "../Layout/CartDrawer";
@@ -13,7 +14,7 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const { cart } = useSelector((state) => state.cart);
-const {user} = useSelector((state)=>state.auth)
+  const { user } = useSelector((state) => state.auth);
   const cartItemCount =
     cart?.products?.reduce((total, product) => total + product.quantity, 0) ||
     0;
@@ -65,30 +66,34 @@ const {user} = useSelector((state)=>state.auth)
           {user && user.role === "admin" && (
             <Link
               to="/admin"
-              className="block bg-black text-white rounded text-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-black px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm transition hover:bg-red-700"
             >
               Admin
             </Link>
           )}
-          <Link to="/profile" className="hover:text-black">
+          <Link to="/profile" className="rounded-full p-1 hover:bg-gray-100 hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700" />
           </Link>
-          <button onClick={toggleDrawer} className="relative hover:text-black">
+          <button
+            type="button"
+            onClick={toggleDrawer}
+            className="relative rounded-full p-1 hover:bg-gray-100 hover:text-black"
+          >
             <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1 bg-bloddy-red text-white rounded-full text-xs px-2 py-0.5">
+              <span className="absolute -top-1 -right-1 bg-bloddy-red text-white rounded-full text-xs px-2 py-0.5">
                 {cartItemCount}
               </span>
             )}
           </button>
           {/* search */}
-          <div className="overflow-hidden">
+          <div>
             <SearchBar />
           </div>
           {/* Hamburder menu */}
-          <div onClick={toggleNavDrawer} className="md:hidden">
+          <button type="button" onClick={toggleNavDrawer} className="md:hidden rounded-full p-1 hover:bg-gray-100">
             <HiBars3BottomRight className="h-6 w-6 text-gray-700" />
-          </div>
+          </button>
         </div>
       </nav>
       <CartDrawer toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} />
@@ -98,7 +103,7 @@ const {user} = useSelector((state)=>state.auth)
         ${navDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex justify-end p-4">
-          <button onClick={toggleNavDrawer}>
+          <button type="button" onClick={toggleNavDrawer}>
             <IoMdClose className="h-6 w-6  text-gray-600 " />
           </button>
         </div>

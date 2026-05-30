@@ -5,6 +5,7 @@ import {
   removeFromCart,
   updateCartItemQuantity,
 } from "../../redux/slice/cartSlice";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 
 const CartContent = ({ userId, guestId, cart }) => {
   const dispatch = useDispatch();
@@ -48,8 +49,9 @@ const CartContent = ({ userId, guestId, cart }) => {
         >
           <div className="flex items-start">
             <img
-              src={product.image}
+              src={product.image || productImageFallback}
               alt={product.name}
+              onError={handleImageError}
               className="h-16 w-14 md:h-24 md:w-20 object-cover mr-4 rounded"
             />
 
@@ -71,7 +73,7 @@ const CartContent = ({ userId, guestId, cart }) => {
                       product.color,
                     )
                   }
-                  className="border rounded md:px-2 md:py-1 text-xl font-medium"
+                  className="border rounded md:px-2 md:py-1 text-xl font-medium hover:bg-gray-100"
                 >
                   -
                 </button>
@@ -90,7 +92,7 @@ const CartContent = ({ userId, guestId, cart }) => {
                       product.color,
                     )
                   }
-                  className="border rounded md:px-2 md:py-1 text-xl font-medium"
+                  className="border rounded md:px-2 md:py-1 text-xl font-medium hover:bg-gray-100"
                 >
                   +
                 </button>
@@ -111,6 +113,7 @@ const CartContent = ({ userId, guestId, cart }) => {
                   product.color,
                 )
               }
+              type="button"
             >
               <RiDeleteBin3Line className="h-6 w-6 mt-2 text-red-600" />
             </button>

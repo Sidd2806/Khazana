@@ -35,7 +35,6 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(registerUser({name,email,password}))
-    console.log('User Registered: ', name, email, password);
   };
   return (
     <div className="flex">
@@ -107,13 +106,13 @@ const Register = () => {
           </p>
           <p className="tracking-tighter text-sm font-semibold text-center text-gray-600">
             By clicking continue, you agree to our{" "}
-            <a className="text-blue-500" href="#">
+            <span className="text-blue-500">
               Terms of Service
-            </a>{" "}
+            </span>{" "}
             and{" "}
-            <a className="text-blue-500" href="#">
+            <span className="text-blue-500">
               Privacy Policy
-            </a>
+            </span>
             .
           </p>
         </form>

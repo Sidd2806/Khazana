@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../../redux/slice/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { handleImageError, productImageFallback } from "../../utils/imageFallback";
 
 
 const OrderConfirmationPage = () => {
@@ -51,7 +52,8 @@ const {checkout}= useSelector((state)=>state.checkout)
                 <div key={item.productId}
                 className="flex items-center mb-4"
                 >
-                    <img src={item.image} alt={item.name}
+                    <img src={item.image || productImageFallback} alt={item.name}
+                    onError={handleImageError}
                     className="h-16 w-16 object-cover rounded-md mr-4" />
                     <div>
                         <h4 className="text-md font-semibold"> {item.name}</h4>
