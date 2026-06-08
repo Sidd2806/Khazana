@@ -22,8 +22,8 @@ const path = require("path");
 app.use(express.json());
 app.use(cors());
 
-// Serve static files from frontend public folder
-app.use(express.static(path.join(__dirname, '../frontend/public')));
+// Serve static files from backend public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect DB
 connectDB();

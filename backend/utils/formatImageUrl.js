@@ -1,8 +1,14 @@
 // Helper function to format image URLs with backend domain
 const formatImageUrl = (product) => {
-  const backendUrl = process.env.BACKEND_URL || process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:9000';
+  let backendUrl = process.env.BACKEND_URL;
+  
+  if (!backendUrl && process.env.VERCEL_URL) {
+    backendUrl = `https://${process.env.VERCEL_URL}`;
+  }
+  
+  if (!backendUrl) {
+    backendUrl = 'http://localhost:9000';
+  }
   
   if (product.images && Array.isArray(product.images)) {
     product.images = product.images.map(img => ({
