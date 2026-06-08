@@ -1,6 +1,7 @@
 const express = require("express");
 const Product = require("../model/Product");
 const { protect, admin } = require("../Middleware/authMiddleware");
+const { formatProductImages } = require("../utils/formatImageUrl");
 
 const router = express.Router();
 
@@ -227,7 +228,7 @@ router.get("/", async (req, res) => {
     let products = await Product.find(query)
       .sort(sort)
       .limit(Number(limit) || 0);
-    res.json(products);
+    res.json(formatProductImages(products));
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Internal server error" });
@@ -241,7 +242,7 @@ router.get("/best-seller", async (req, res) => {
   try {
     const bestSeller = await Product.findOne().sort({ rating: -1 }).limit(4);
     if (bestSeller) {
-      res.json(bestSeller);
+      res.json(formatProductImages(bestSeller));
     } else {
       res.status(404).json({ message: "No best seller found" });
     }
@@ -257,7 +258,7 @@ router.get("/new-arrivals", async (req, res) => {
   try {
     const newArrival = await Product.find().sort({ createdAt: -1 }).limit(8);
     if (newArrival) {
-      res.json(newArrival);
+      res.json(formatProductImages(newArrival));
     } else {
       res.status(404).json({ message: "No best seller found" });
     }
@@ -275,7 +276,7 @@ router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
-      res.json(product);
+      res.json(formatProductImages(product));
     } else {
       res.status(401).json({ message: "Message not found" });
     }
@@ -300,7 +301,7 @@ router.get("/similar/:id", async (req, res) => {
       gender: product.gender,
       category: product.category,
     }).limit(4);
-    res.json(similarProduct);
+    res.json(formatProductImages(similarProduct));
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Server error" });

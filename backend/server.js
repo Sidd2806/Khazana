@@ -16,10 +16,14 @@ dotenv.config();
 
 const app = express();
 const connectDB = require("./config/db.js");
+const path = require("path");
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+// Serve static files from frontend public folder
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 // Connect DB
 connectDB();
