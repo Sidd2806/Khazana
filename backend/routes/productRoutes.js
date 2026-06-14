@@ -170,7 +170,7 @@ router.get("/", async (req, res) => {
     } = req.query;
     let query = {};
     if (collection && collection.toLocaleLowerCase() !== "all") {
-      query.collection = collection;
+      query.collections = collection;
     }
     if (category && category.toLocaleLowerCase() !== "all") {
       query.category = category;
@@ -182,10 +182,10 @@ router.get("/", async (req, res) => {
       query.brand = { $in: brand.split(",") };
     }
     if (size) {
-      query.size = { $in: size.split(",") };
+      query.sizes = { $in: size.split(",") };
     }
     if (color) {
-      query.color = { $in: [color] };
+      query.colors = { $in: color.split(",") };
     }
     if (gender) {
       query.gender = gender;
