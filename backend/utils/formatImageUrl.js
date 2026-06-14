@@ -1,10 +1,14 @@
-const getBackendUrl = () => {
-  if (process.env.BACKEND_URL) {
-    return process.env.BACKEND_URL.replace(/\/$/, "");
+const getBackendUrl = (backendUrl) => {
+  if (backendUrl) {
+    return backendUrl.replace(/\/$/, "");
   }
 
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
+  }
+
+  if (process.env.BACKEND_URL) {
+    return process.env.BACKEND_URL.replace(/\/$/, "");
   }
 
   return "http://localhost:9000";
@@ -36,6 +40,10 @@ const normalizeImageUrl = (url, backendUrl) => {
     const cloudinaryProductsPath = "/khazana/products/";
     const productsPathIndex = parsedUrl.pathname.indexOf(cloudinaryProductsPath);
 
+    if (parsedUrl.pathname.startsWith("/pictures/")) {
+      return toPictureUrl(backendUrl, parsedUrl.pathname.slice("/pictures/".length));
+    }
+
     if (
       parsedUrl.hostname === "res.cloudinary.com" &&
       productsPathIndex !== -1
@@ -52,12 +60,12 @@ const normalizeImageUrl = (url, backendUrl) => {
   }
 };
 
-const formatImageUrl = (product) => {
+const formatImageUrl = (product, backendUrl) => {
   if (!product) {
     return product;
   }
 
-  const backendUrl = getBackendUrl();
+  const formattedBackendUrl = getBackendUrl(backendUrl);
   const productObject = typeof product.toObject === "function"
     ? product.toObject()
     : product;
@@ -65,19 +73,19 @@ const formatImageUrl = (product) => {
   if (Array.isArray(productObject.images)) {
     productObject.images = productObject.images.map((img) => ({
       ...img,
-      url: normalizeImageUrl(img.url, backendUrl),
+      url: normalizeImageUrl(img.url, formattedBackendUrl),
     }));
   }
 
   return productObject;
 };
 
-const formatProductImages = (products) => {
+const formatProductImages = (products, backendUrl) => {
   if (Array.isArray(products)) {
-    return products.map((product) => formatImageUrl(product));
+    return products.map((product) => formatImageUrl(product, backendUrl));
   }
 
-  return formatImageUrl(products);
+  return formatImageUrl(products, backendUrl);
 };
 
 module.exports = { formatImageUrl, formatProductImages, normalizeImageUrl };

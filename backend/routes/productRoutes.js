@@ -5,6 +5,18 @@ const { formatProductImages } = require("../utils/formatImageUrl");
 
 const router = express.Router();
 
+const getRequestBaseUrl = (req) => {
+  const forwardedProto = req.get("x-forwarded-proto");
+  const forwardedHost = req.get("x-forwarded-host");
+  const protocol = (forwardedProto || req.protocol || "http").split(",")[0];
+  const host = (forwardedHost || req.get("host") || "").split(",")[0];
+
+  return host ? `${protocol}://${host}` : undefined;
+};
+
+const formatForRequest = (req, products) =>
+  formatProductImages(products, getRequestBaseUrl(req));
+
 // @route POST /api/products
 // @desc Create a new products
 // @access Private/Admin
@@ -228,7 +240,7 @@ router.get("/", async (req, res) => {
     let products = await Product.find(query)
       .sort(sort)
       .limit(Number(limit) || 0);
-    res.json(formatProductImages(products));
+    res.json(formatForRequest(req, products));
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Internal server error" });
@@ -242,7 +254,7 @@ router.get("/best-seller", async (req, res) => {
   try {
     const bestSeller = await Product.findOne().sort({ rating: -1 }).limit(4);
     if (bestSeller) {
-      res.json(formatProductImages(bestSeller));
+      res.json(formatForRequest(req, bestSeller));
     } else {
       res.status(404).json({ message: "No best seller found" });
     }
@@ -258,7 +270,7 @@ router.get("/new-arrivals", async (req, res) => {
   try {
     const newArrival = await Product.find().sort({ createdAt: -1 }).limit(8);
     if (newArrival) {
-      res.json(formatProductImages(newArrival));
+      res.json(formatForRequest(req, newArrival));
     } else {
       res.status(404).json({ message: "No best seller found" });
     }
@@ -276,7 +288,7 @@ router.get("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
-      res.json(formatProductImages(product));
+      res.json(formatForRequest(req, product));
     } else {
       res.status(401).json({ message: "Message not found" });
     }
@@ -301,7 +313,7 @@ router.get("/similar/:id", async (req, res) => {
       gender: product.gender,
       category: product.category,
     }).limit(4);
-    res.json(formatProductImages(similarProduct));
+    res.json(formatForRequest(req, similarProduct));
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Server error" });
