@@ -79,7 +79,7 @@ const Footer = () => {
           <ul className="space-y-4 text-gray-700">
             <li>
               <a
-                href="tel:+917340092439"
+                href="tel:+910123456789"
                 className="hover:text-gray-500 transition-colors"
               >
                 Contact Us
@@ -144,7 +144,7 @@ const Footer = () => {
           <p className="text-gray-600">Call Us</p>
           <p>
             <FiPhoneCall className="inline-block mr-2" />
-            +91 7340092439
+            +910123456789
           </p>
         </div>
         {/* FOOTER BOOTOM */}
